@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
         if(Keyboard.current.leftArrowKey.isPressed)
         {
-            playerInput += new Vector2(-1, 0);
+            playerInput = new Vector2(-3, 0);
             isWalking = true;
             direction = true;
 
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
        else if (Keyboard.current.rightArrowKey.isPressed)
         {
-            playerInput += new Vector2(1, 0);
+            playerInput = new Vector2(3, 0);
             isWalking = true;
             direction = false;
 
@@ -51,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
         else if(!Keyboard.current.leftArrowKey.isPressed && !Keyboard.current.rightArrowKey.isPressed)
         {
-            playerInput += new Vector2(0, 0);
+            playerInput = new Vector2(0, 0);
             isWalking = false;
 
         }
@@ -59,15 +60,20 @@ public class PlayerController : MonoBehaviour
         
 
         Debug.Log(playerInput);
-
         MovementUpdate(playerInput);
+
     }
+
+   
 
     private void MovementUpdate(Vector2 playerInput)
     {
 
-        rg2d.AddForce(playerInput);
-
+        rg2d.linearVelocity = playerInput;
+        if (playerInput.x == 0)
+        {
+            rg2d.linearVelocity = new Vector2(0, 0);
+        }
 
         
     }
@@ -100,10 +106,15 @@ public class PlayerController : MonoBehaviour
         }
 
         return fd;
+
+
       
 
 
     }
+
+    
+
 
 
 }
