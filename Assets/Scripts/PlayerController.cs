@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public Vector2 playerInput;
+
+    public ColliderDetection cd;
+    Vector2 playerInput;
 
     public Rigidbody2D rg2d;
     public enum FacingDirection
@@ -23,20 +25,27 @@ public class PlayerController : MonoBehaviour
 
     public bool direction;
 
+    public Vector3 detecetion;
+
+    public float pY;
+
     void Start()
     {
-        onGround = true; 
+        
     }
 
     void Update()
     {
+
+        
+
        
       
         playerInput = new Vector2();
 
         if(Keyboard.current.leftArrowKey.isPressed)
         {
-            playerInput = new Vector2(-3, 0);
+            playerInput = new Vector2(-3, pY);
             isWalking = true;
             direction = true;
 
@@ -44,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
        else if (Keyboard.current.rightArrowKey.isPressed)
         {
-            playerInput = new Vector2(3, 0);
+            playerInput = new Vector2(3, pY);
             isWalking = true;
             direction = false;
 
@@ -52,19 +61,56 @@ public class PlayerController : MonoBehaviour
 
         else if(!Keyboard.current.leftArrowKey.isPressed && !Keyboard.current.rightArrowKey.isPressed)
         {
-            playerInput = new Vector2(0, 0);
+            playerInput = new Vector2(0, pY);
             isWalking = false;
 
         }
 
+        if(cd.isGround)
+        {
+            pY = 0;
+        }
+        else if(!cd.isGround)
+        {
+            pY = -1;
+        }
         
+        {
+            Debug.Log("hmmm");
+        }
+            
+
 
         Debug.Log(playerInput);
-        MovementUpdate(playerInput);
+
+        if (Physics.Raycast(transform.position, Vector3.Normalize(Vector3.down), 3f))
+        {
+            Debug.Log("erm");
+            onGround = false;
+        }
+
+        else if (!Physics.Raycast(transform.position, Vector3.Normalize(Vector3.down), 3f))
+        {
+            onGround = true;
+        }
+
 
     }
 
-   
+    private void FixedUpdate()
+    {
+        MovementUpdate(playerInput);
+  
+
+    }
+
+
+
+
+
+
+
+
 
     private void MovementUpdate(Vector2 playerInput)
     {
@@ -73,9 +119,23 @@ public class PlayerController : MonoBehaviour
         if (playerInput.x == 0)
         {
             rg2d.linearVelocity = new Vector2(0, 0);
+
+            
         }
 
-        
+        if (!cd.isGround)
+        {
+           
+
+            if (playerInput.x == 0)
+            {
+                rg2d.linearVelocity = new Vector2(0, -1);
+
+
+            }
+        }
+
+
     }
 
     public bool IsWalking()
@@ -88,7 +148,7 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded()
     {
       
-        return onGround;
+        return cd.isGround;
         
     }
 
@@ -113,6 +173,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+  
     
 
 
