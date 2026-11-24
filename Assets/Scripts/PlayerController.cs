@@ -6,7 +6,9 @@ public class PlayerController : MonoBehaviour
 {
 
     public ColliderDetection cd;
-    Vector2 playerInput;
+  
+
+    public BoxCollider2D bc2d;
 
     public Rigidbody2D rg2d;
     public enum FacingDirection
@@ -29,9 +31,12 @@ public class PlayerController : MonoBehaviour
 
     public float pY;
 
+    public float pX;
+
     void Start()
     {
-        
+        pX = 4;
+        bc2d.isTrigger = false;
     }
 
     void Update()
@@ -40,65 +45,57 @@ public class PlayerController : MonoBehaviour
         
 
        
-      
-        playerInput = new Vector2();
-
-        if(Keyboard.current.leftArrowKey.isPressed)
-        {
-            playerInput = new Vector2(-3, pY);
-            isWalking = true;
-            direction = true;
-
-        }
-
-       else if (Keyboard.current.rightArrowKey.isPressed)
-        {
-            playerInput = new Vector2(3, pY);
-            isWalking = true;
-            direction = false;
-
-        }
-
-        else if(!Keyboard.current.leftArrowKey.isPressed && !Keyboard.current.rightArrowKey.isPressed)
-        {
-            playerInput = new Vector2(0, pY);
-            isWalking = false;
-
-        }
-
-        if(cd.isGround)
-        {
-            pY = 0;
-        }
-        else if(!cd.isGround)
-        {
-            pY = -1;
-        }
-        
-        {
-            Debug.Log("hmmm");
-        }
-            
-
-
-        Debug.Log(playerInput);
-
-        if (Physics.Raycast(transform.position, Vector3.Normalize(Vector3.down), 3f))
-        {
-            Debug.Log("erm");
-            onGround = false;
-        }
-
-        else if (!Physics.Raycast(transform.position, Vector3.Normalize(Vector3.down), 3f))
-        {
-            onGround = true;
-        }
 
 
     }
 
     private void FixedUpdate()
     {
+
+
+        Vector2 playerInput = new Vector2();
+
+        if (Keyboard.current.leftArrowKey.isPressed)
+        {
+            playerInput = new Vector2(-pX, pY);
+            isWalking = true;
+            fd = FacingDirection.left;
+
+        }
+
+        else if (Keyboard.current.rightArrowKey.isPressed)
+        {
+            playerInput = new Vector2(pX, pY);
+            isWalking = true;
+            fd = FacingDirection.right;
+
+        }
+
+        else if (!Keyboard.current.leftArrowKey.isPressed && !Keyboard.current.rightArrowKey.isPressed)
+        {
+            playerInput = new Vector2 (0, pY);
+            isWalking = false;
+
+        }
+
+        if (cd.isGround)
+        {
+            pY = 0;
+           
+        }
+        else if (!cd.isGround)
+        {
+            pY = -3;
+            
+        }
+
+        {
+         
+        }
+
+
+
+     
         MovementUpdate(playerInput);
   
 
@@ -115,25 +112,8 @@ public class PlayerController : MonoBehaviour
     private void MovementUpdate(Vector2 playerInput)
     {
 
-        rg2d.linearVelocity = playerInput;
-        if (playerInput.x == 0)
-        {
-            rg2d.linearVelocity = new Vector2(0, 0);
-
-            
-        }
-
-        if (!cd.isGround)
-        {
-           
-
-            if (playerInput.x == 0)
-            {
-                rg2d.linearVelocity = new Vector2(0, -1);
-
-
-            }
-        }
+       rg2d.linearVelocity = playerInput;
+      
 
 
     }
@@ -154,16 +134,7 @@ public class PlayerController : MonoBehaviour
 
     public FacingDirection GetFacingDirection()
     {
-       
-        if (direction == true)
-        {
-            fd = FacingDirection.left;
-        }
-
-        if (direction == false)
-        {
-            fd = FacingDirection.right;
-        }
+      
 
         return fd;
 
